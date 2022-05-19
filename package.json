@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dest/index.js",
-    "dev": "npx ts-node ./src/index.ts"
+    "dev": "npx ts-node ./src/index.ts",
+    "build": "./node_modules/.bin/babel src --extensions \".ts\" --out-dir dist --copy-files --no-copy-ignored"
   },
   "repository": {
     "type": "git",
