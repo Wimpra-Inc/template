@@ -1,6 +1,6 @@
 # robot-template
 
-template fort robots
+template for robots
 
 ## Getting started
 

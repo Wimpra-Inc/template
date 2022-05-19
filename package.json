@@ -1,0 +1,28 @@
+{
+  "name": "robot-template",
+  "version": "1.0.0",
+  "description": "template for robots",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/Hubbots/robot-template.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/Hubbots/robot-template/issues"
+  },
+  "homepage": "https://gitlab.com/Hubbots/robot-template#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/parser": "^5.25.0",
+    "eslint": "^8.15.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "typescript": "^4.6.4"
+  }
+}
