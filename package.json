@@ -4,13 +4,14 @@
   "description": "template for robots",
   "main": "index.js",
   "scripts": {
-    "start": "node ./dest/index.js",
-    "dev": "npx ts-node ./src/index.ts",
-    "build": "./node_modules/.bin/babel src --extensions \".ts\" --out-dir dist --copy-files --no-copy-ignored"
+    "start": "node ./src/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@gitlab.com/Hubbots/robot-template.git"
+  },
+  "engines": {
+    "node": "16"
   },
   "keywords": [],
   "author": "",
@@ -20,30 +21,19 @@
   },
   "homepage": "https://gitlab.com/Hubbots/robot-template#readme",
   "devDependencies": {
-    "@babel/cli": "^7.17.10",
-    "@babel/core": "^7.17.12",
-    "@babel/node": "^7.17.10",
-    "@babel/plugin-transform-typescript": "^7.17.12",
-    "@babel/preset-env": "^7.17.12",
-    "@babel/preset-typescript": "^7.17.12",
-    "@types/node": "^17.0.34",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
     "dotenv": "^16.0.1",
-    "eslint": "^8.15.0",
+    "eslint": "^8.23.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-standard": "^17.0.0",
-    "eslint-import-resolver-typescript": "^2.7.1",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "git-commit-msg-linter": "^4.1.2",
-    "ts-node": "^10.7.0",
-    "typescript": "^4.6.4",
-    "@types/puppeteer-core": "^5.4.0"
+    "eslint-plugin-n": "^15.2.5",
+    "eslint-plugin-promise": "^6.0.1",
+    "git-commit-msg-linter": "^4.1.2"
   },
   "dependencies": {
-    "puppeteer-core": "^14.1.0"
+    "axios": "^0.27.2",
+    "cpf-cnpj-validator": "^1.0.3",
+    "puppeteer-core": "^14.1.0",
+    "validator": "^13.7.0"
   }
 }
