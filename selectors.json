@@ -1,8 +1,3 @@
 {
-    "site_url": "https://senhawebsts.prefeitura.sp.gov.br/Account/Login.aspx?ReturnUrl=%2f%3fwa%3dwsignin1.0%26wtrealm%3dhttps%253a%252f%252fduc.prefeitura.sp.gov.br%252fportal%252f%26wctx%3drm%253d0%2526id%253dpassive%2526ru%253d%25252fportal%25252f%26wct%3d2021-02-03T21%253a22%253a14Z&wa=wsignin1.0&wtrealm=https%3a%2f%2fduc.prefeitura.sp.gov.br%2fportal%2f&wctx=rm%3d0%26id%3dpassive%26ru%3d%252fportal%252f&wct=2021-02-03T21%3a22%3a14Z",
-    "login": {
-        "cnpj": "#formBody_formBody_txtUser",
-        "password": "#formBody_formBody_txtPassword",
-        "submit": "#formBody_formBody_btnLogin"
-    }
+    "site_url": "https://www.google.com"
 }
