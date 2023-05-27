@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer-core')
 const { readdirSync } = require('fs')
 const { setTimeout } = require('timers/promises')
 const { getEnv } = require('../env')
+const DownloadTimeoutError = require('../../errors/browser/DownloadTimeoutError')
 
 class PuppeteerAdapter {
   /**
@@ -54,20 +55,19 @@ class PuppeteerAdapter {
     await client.send('Network.clearBrowserCookies')
   }
 
-  async waitForDownload (pathDownload) {
-    let wasDownload = false
-    let string = ''
-    while (wasDownload === false) {
-      string = readdirSync(pathDownload).join('')
-      if (!string.includes('crdownload')) {
-        if (getEnv('FILE_NAME_DOWNLOAD') && !string.includes(getEnv('FILE_NAME_DOWNLOAD'))) {
-          await setTimeout(1500)
-          continue
-        }
-        wasDownload = true
-        continue
+  async waitForDownload (pathDownload, limit = 0) {
+    if (limit >= 60000) {
+      throw new DownloadTimeoutError('Limite para o download excedido')
+    }
+    const string = readdirSync(pathDownload).join('')
+    if (!string.includes('crdownload')) {
+      if (getEnv('FILE_NAME_DOWNLOAD') && !string.includes(getEnv('FILE_NAME_DOWNLOAD'))) {
+        await setTimeout(1500)
+        return await this.waitForDownload(pathDownload, limit + 1500)
       }
     }
+
+    return true
   }
 }
 
