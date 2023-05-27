@@ -19,7 +19,11 @@ const { appendFileSync } = require('fs');
     require('dotenv').config({
       path: join(parse(__dirname).dir, '.env')
     })
-    worker.on('message', (message) => console.log(message))
+    worker.on('message', (message) => {
+      process.stdin.write(message)
+      if (process.env.CREATE_CONSOLE_FILE === 'false') return true
+      appendFileSync(join(process.cwd(), 'saida', 'console.txt'), `${message}\n`)
+    })
     worker.on('exit', () => console.log('FIM'))
     worker.on('online', () => console.log('running'))
     worker.on('error', (error) => console.log(error))
