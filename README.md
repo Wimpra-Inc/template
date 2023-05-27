@@ -6,8 +6,6 @@
 
 <ul>
     <li>NODE</li>
-    <li>TYPESCRIPT</li>
-    <li>BABEL</li>
     <li>ESLINT</li>
     <li><a href="https://www.conventionalcommits.org/en/v1.0.0/">CONVENTIONAL COMMITS</a></li>
 
