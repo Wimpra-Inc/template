@@ -1,6 +1,6 @@
 # Robot-template
 
-<p>This project is a base for build new robots. </p>
+<p>This project is a base for build new scrapy script. </p>
 
 ## Technologies
 
@@ -24,8 +24,6 @@ npm i
 
 
 /// IMPLEMENTAR O METODO createBrowserWSEndpont
-/// CRIAR METODOS SECUNDARIOS PARA O BROWSER (PATH DOWNLOAD)
-/// IMPLEMENTAR CLASSES DE ERROS CUSTOMIZADAS
 /// IMPLEMENTAR LOG
 /// IMPLEMENTAR CLASSE PARA BURLAR OS CAPTCHAS
 /// IMPLEMENTAÇÃO COM BANCO DE DADOS (SQ LITE + ORM)
