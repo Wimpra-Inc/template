@@ -1,6 +1,7 @@
 const makeBrowser = require('./factories/makeBrowser')
 const { WrongUserKey, ZeroBalance } = require('./errors/captcha')
 const makePage = require('./factories/makePage')
+const DownloadTimeoutError = require('./errors/browser/DownloadTimeoutError')
 /**
  *
  * @param {{values : Array, __root_dir : string}} data
@@ -14,30 +15,38 @@ module.exports = async (data, selectors, log) => {
     try {
       ({ page } = await makePage(browser))
       await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
-      console.log('template robots')
+      log('template robots')
       await browser.close()
       return {
         status: true
       }
     } catch (error) {
-      console.log(error)
+      log(error.message)
       if (error instanceof WrongUserKey) {
-        log('Erro ao enviar o usuario para o serviço de captcha')
         return {
-          status: true,
+          status: false,
           continue: false,
           error: error.message
         }
       }
       if (error instanceof ZeroBalance) {
-        log('Erro ao descriptografar captcha: não a saldo disponivel')
         return {
-          status: true,
+          status: false,
           continue: false,
           error: error.message
         }
       }
-      log(error)
+
+      if (error instanceof DownloadTimeoutError) {
+        return {
+          status: false,
+          continue: true,
+          error: error.message,
+          repeat: true,
+          lastIndex: index
+        }
+      }
+
       return {
         status: false,
         continue: true,
