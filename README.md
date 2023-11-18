@@ -24,7 +24,5 @@ npm i
 
 <ul>
     <li>IMPLEMENTAR O METODO createBrowserWSEndpont</li>
-    <li>IMPLEMENTAR LOG</li>
     <li>IMPLEMENTAR CLASSE PARA BURLAR OS CAPTCHAS</li>
-    <li>IMPLEMENTAÇÃO COM BANCO DE DADOS (SQ LITE + ORM)</li>
 </ul>
