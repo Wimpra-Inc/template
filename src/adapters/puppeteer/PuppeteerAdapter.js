@@ -1,8 +1,11 @@
 const puppeteer = require('puppeteer-core')
 const { readdirSync } = require('fs')
 const { setTimeout } = require('timers/promises')
-const { getEnv } = require('../../utils/env')
+const { getEnv, getEnvBrowser } = require('../../utils/env')
 const DownloadTimeoutError = require('../../errors/browser/DownloadTimeoutError')
+const { exec } = require('child_process')
+const get = require('../../utils/request/get')
+const BrowserConnectionError = require('../../errors/browser/BrowserConnectionError')
 
 class PuppeteerAdapter {
   /**
@@ -11,6 +14,22 @@ class PuppeteerAdapter {
     */
   async handleBrowser (config) {
     if (global.browser) return global.browser
+    if (getEnvBrowser().CREATE_BROWSER_BY_WS_ENDPOINT) {
+      const chromeCommandStart = this.#getChromeCommandStart()
+      exec(chromeCommandStart)
+      await setTimeout(5000)
+      const chromeDebugData = await get(getEnvBrowser().CHROME_REMOTE_DEBUGGING_URL)
+      const webSocketDebuggerUrl = chromeDebugData?.data?.webSocketDebuggerUrl
+      if (!webSocketDebuggerUrl) {
+        throw new BrowserConnectionError('Não foi possível obter o webSocketDebuggerUrl')
+      }
+      global.browser = await puppeteer.connect({
+        browserWSEndpoint: webSocketDebuggerUrl,
+        ...config
+      })
+
+      return global.browser
+    }
     global.browser = await puppeteer.launch(config)
     return global.browser
   }
@@ -68,6 +87,13 @@ class PuppeteerAdapter {
     }
 
     return true
+  }
+
+  #getChromeCommandStart () {
+    if (process.platform === 'win32') {
+      return ''
+    }
+    return `/usr/bin/google-chrome-stable --remote-debugging-port=${getEnv('CHROME_REMOTE_DEBUGGING_PORT')}`
   }
 }
 

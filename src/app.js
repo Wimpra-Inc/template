@@ -2,6 +2,7 @@ const makeBrowser = require('./factories/makeBrowser')
 const { WrongUserKey, ZeroBalance } = require('./errors/captcha')
 const makePage = require('./factories/makePage')
 const DownloadTimeoutError = require('./errors/browser/DownloadTimeoutError')
+const BrowserConnectionError = require('./errors/browser/BrowserConnectionError')
 /**
  *
  * @param {{values : Array, __root_dir : string}} data
@@ -44,6 +45,14 @@ module.exports = async (data, selectors, log) => {
           error: error.message,
           repeat: true,
           lastIndex: index
+        }
+      }
+
+      if (error instanceof BrowserConnectionError) {
+        return {
+          status: false,
+          continue: false,
+          error: error.message
         }
       }
 
