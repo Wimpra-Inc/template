@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer-core')
 const { readdirSync } = require('fs')
 const { setTimeout } = require('timers/promises')
-const { getEnv } = require('../env')
+const { getEnv } = require('../../utils/env')
 const DownloadTimeoutError = require('../../errors/browser/DownloadTimeoutError')
 
 class PuppeteerAdapter {

@@ -5,8 +5,7 @@ const SELECTORS = require('../selectors.json')
 const workerEvents = require('./events/workerEvents')
 const setVariables = require('./setVariables')
 const { join, parse } = require('path')
-const { rmSync } = require('fs')
-const { appendFileSync } = require('fs');
+const { rmSync, appendFileSync } = require('fs');
 
 (async () => {
   if (isMainThread) {
@@ -20,7 +19,7 @@ const { appendFileSync } = require('fs');
       path: join(parse(__dirname).dir, '.env')
     })
     worker.on('message', (message) => {
-      process.stdin.write(message)
+      process.stdout.write(message + '\n')
       if (process.env.CREATE_CONSOLE_FILE === 'false') return true
       appendFileSync(join(process.cwd(), 'saida', 'console.txt'), `${message}\n`)
     })
@@ -37,31 +36,35 @@ const { appendFileSync } = require('fs');
     const data = workerData
     while (true) {
       const execution = await app(data, SELECTORS, parentPort.postMessage.bind(parentPort))
+
       if (!execution.status) {
+        const messageError = `${execution?.error}\n`
+        const fileError = join(global.PATH_SAIDA, 'erros.csv')
+
         if (!execution.continue) {
-          appendFileSync(join(global.pathSaida, 'erros.csv'), `${execution.error}\n`)
+          appendFileSync(fileError, messageError)
           break
         }
         if (execution.repeat) {
           if (global.attempts > 3) {
-            appendFileSync(join(global.pathSaida, 'erros.csv'), `${data.values[execution.lastIndex]?.cnpj};${execution.error}\n`)
-            data.values = data.values.filter((item, index) => index > execution.lastIndex)
+            appendFileSync(fileError, messageError)
+            data.values = data.values.filter((_, index) => index > execution.lastIndex)
             global.attempts = 0
             continue
           }
-          data.values = data.values.filter((item, index) => index >= execution.lastIndex)
+          data.values = data.values.filter((_, index) => index >= execution.lastIndex)
           global.attempts++
           continue
         }
-        appendFileSync(join(global.pathSaida, 'erros.csv'), `${data.values[execution.lastIndex]?.cnpj};${execution.error}\n`)
-        data.values = data.values.filter((item, index) => index > execution.lastIndex)
+        appendFileSync(fileError, messageError)
+        data.values = data.values.filter((_, index) => index > execution.lastIndex)
         global.attempts = 0
         continue
       }
       break
     }
 
-    rmSync(global.pathTemp, { force: true, recursive: true })
+    rmSync(global.PATH_TEMP, { force: true, recursive: true })
     process.exit()
   }
 })()

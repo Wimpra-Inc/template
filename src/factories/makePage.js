@@ -1,4 +1,4 @@
-const PuppeteerAdapter = require('../utils/puppeteer/PuppeteerAdapter')
+const PuppeteerAdapter = require('../adapters/puppeteer/PuppeteerAdapter')
 const { getEnvBrowser } = require('../utils/env')
 
 module.exports = async function (browser) {
