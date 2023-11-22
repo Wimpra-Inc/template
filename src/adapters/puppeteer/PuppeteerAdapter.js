@@ -5,7 +5,7 @@ const { getEnv, getEnvBrowser } = require('../../utils/env')
 const DownloadTimeoutError = require('../../errors/browser/DownloadTimeoutError')
 const { exec } = require('child_process')
 const get = require('../../utils/request/get')
-const BrowserConnectionError = require('../../errors/browser/BrowserConnectionError')0
+const BrowserConnectionError = require('../../errors/browser/BrowserConnectionError')
 
 class PuppeteerAdapter {
   /**
