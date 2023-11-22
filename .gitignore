@@ -189,3 +189,7 @@ entrada/
 saida/
 temp/
 .vscode/
+
+
+*.zip
+*.rar

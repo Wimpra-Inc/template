@@ -16,8 +16,12 @@ module.exports = async (data, selectors, log) => {
     try {
       ({ page } = await makePage(browser))
       await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
-      log('template robots')
+      log({ message: 'Template Robots', progress: 50 })
+      await page.waitForTimeout(5000)
+      log({message: 'Robo finalizado', progress: 75})
+      await page.waitForTimeout(5000)
       await browser.close()
+      log({message: 'Robo finalizado', progress: 100})
       return {
         status: true
       }

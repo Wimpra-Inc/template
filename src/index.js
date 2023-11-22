@@ -6,6 +6,7 @@ const workerEvents = require('./events/workerEvents')
 const setVariables = require('./setVariables')
 const { join, parse } = require('path')
 const { rmSync, appendFileSync } = require('fs');
+const { pathToZip } = require('./utils/files/zip');
 
 (async () => {
   if (isMainThread) {
@@ -24,7 +25,7 @@ const { rmSync, appendFileSync } = require('fs');
       appendFileSync(join(process.cwd(), 'saida', 'console.txt'), `${message}\n`)
     })
     worker.on('exit', () => console.log('FIM'))
-    worker.on('online', () => console.log('running'))
+    worker.on('online', () => console.log({message: 'Robo Iniciado', progress: 0}))
     worker.on('error', (error) => console.log(error))
     // worker.postMessage('close')
   } else {
@@ -65,6 +66,7 @@ const { rmSync, appendFileSync } = require('fs');
     }
 
     rmSync(global.PATH_TEMP, { force: true, recursive: true })
+    await pathToZip(join(workerData.__root_dir, 'saida.zip'), global.PATH_SAIDA)
     process.exit()
   }
 })()

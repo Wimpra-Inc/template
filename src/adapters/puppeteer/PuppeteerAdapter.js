@@ -1,11 +1,11 @@
-const puppeteer = require('puppeteer-core')
+const puppeteer = require('puppeteer')
 const { readdirSync } = require('fs')
 const { setTimeout } = require('timers/promises')
 const { getEnv, getEnvBrowser } = require('../../utils/env')
 const DownloadTimeoutError = require('../../errors/browser/DownloadTimeoutError')
 const { exec } = require('child_process')
 const get = require('../../utils/request/get')
-const BrowserConnectionError = require('../../errors/browser/BrowserConnectionError')
+const BrowserConnectionError = require('../../errors/browser/BrowserConnectionError')0
 
 class PuppeteerAdapter {
   /**
@@ -93,7 +93,7 @@ class PuppeteerAdapter {
     if (process.platform === 'win32') {
       return ''
     }
-    return `/usr/bin/google-chrome-stable --remote-debugging-port=${getEnv('CHROME_REMOTE_DEBUGGING_PORT')}`
+    return `${getEnv('EXECUTABLE_PATH')} --remote-debugging-port=${getEnv('CHROME_REMOTE_DEBUGGING_PORT')}`
   }
 }
 

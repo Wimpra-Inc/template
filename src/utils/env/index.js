@@ -27,7 +27,7 @@ module.exports = {
       defaultNavigationTimeout: +process.env.SET_DEFAULT_NAVIGATION_TIMEOUT,
       chromeRemoteDebuggingPort: +process.env.CHROME_REMOTE_DEBUGGING_PORT,
       CREATE_BROWSER_BY_WS_ENDPOINT: stringToBoolean(process.env.CREATE_BROWSER_BY_WS_ENDPOINT),
-      CHROME_REMOTE_DEBUGGING_URL: process.env.CHROME_REMOTE_DEBUGGING_URL.replace('PORT', process.env.CHROME_REMOTE_DEBUGGING_PORT)
+      CHROME_REMOTE_DEBUGGING_URL: process.env.CHROME_REMOTE_DEBUGGING_URL?.replace('PORT', process.env.CHROME_REMOTE_DEBUGGING_PORT)
     }
   }
 }
