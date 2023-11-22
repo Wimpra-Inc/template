@@ -17,12 +17,12 @@
     "license": "ISC",
     "devDependencies": {
         "dotenv": "^16.0.1",
-        "eslint": "^8.23.0",
+        "eslint": "^8.54.0",
         "eslint-config-airbnb-base": "^15.0.0",
-        "eslint-config-standard": "^17.0.0",
-        "eslint-plugin-import": "^2.26.0",
-        "eslint-plugin-n": "^15.2.5",
-        "eslint-plugin-promise": "^6.0.1",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-n": "^16.3.1",
+        "eslint-plugin-promise": "^6.1.1",
         "git-commit-msg-linter": "^4.1.2"
     },
     "dependencies": {
