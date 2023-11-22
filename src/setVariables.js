@@ -11,4 +11,5 @@ module.exports = (rootDir) => {
   global.PATH_ENTRADA = pathEntrada
   global.PATH_TEMP = pathTemp
   global.PATH_SAIDA = pathSaida
+  global.ROOT_DIR = rootDir
 }

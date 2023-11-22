@@ -32,8 +32,8 @@ const { pathToZip } = require('./utils/files/zip');
     require('dotenv').config({
       path: join(workerData.__root_dir, '.env')
     })
-    workerEvents()
     setVariables(workerData.__root_dir)
+    workerEvents()
     const data = workerData
     while (true) {
       const execution = await app(data, SELECTORS, parentPort.postMessage.bind(parentPort))
@@ -66,7 +66,7 @@ const { pathToZip } = require('./utils/files/zip');
     }
 
     rmSync(global.PATH_TEMP, { force: true, recursive: true })
-    await pathToZip(join(workerData.__root_dir, 'saida.zip'), global.PATH_SAIDA)
+    await pathToZip(parse(global.ROOT_DIR).name + '.zip', global.PATH_SAIDA)
     process.exit()
   }
 })()
