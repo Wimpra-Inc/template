@@ -1,8 +1,7 @@
 const makeBrowser = require('./factories/makeBrowser')
 const { WrongUserKey, ZeroBalance } = require('./errors/captcha')
 const makePage = require('./factories/makePage')
-const DownloadTimeoutError = require('./errors/browser/DownloadTimeoutError')
-const BrowserConnectionError = require('./errors/browser/BrowserConnectionError')
+const {BrowserConnectionError,DownloadTimeoutError, PageError} = require('./errors/browser')
 /**
  *
  * @param {{values : Array, __root_dir : string}} data
@@ -16,9 +15,9 @@ module.exports = async (data, selectors, log) => {
     try {
       ({ page } = await makePage(browser))
       await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
-      log({ message: 'Template Robots', progress: 50 })
+      log({ message: 'PROCESSANDO DADOS', progress: 50 })
       await page.waitForTimeout(5000)
-      log({message: 'Robo finalizado', progress: 75})
+      log({message: 'ENVIANDO DADOS', progress: 75})
       await page.waitForTimeout(5000)
       await browser.close()
       log({message: 'Robo finalizado', progress: 100})
@@ -26,7 +25,6 @@ module.exports = async (data, selectors, log) => {
         status: true
       }
     } catch (error) {
-      log(error.message)
       if (error instanceof WrongUserKey) {
         return {
           status: false,
@@ -57,6 +55,16 @@ module.exports = async (data, selectors, log) => {
           status: false,
           continue: false,
           error: error.message
+        }
+      }
+
+      if (error instanceof PageError) {
+        return {
+          status: false,
+          continue: true,
+          repeat: false,
+          error: `${currentData?.RAZAO};${currentData?.CNPJ};${error.message}`,
+          lastIndex
         }
       }
 

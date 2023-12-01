@@ -7,12 +7,12 @@ const setVariables = require('./setVariables')
 const { join, parse } = require('path')
 const { rmSync, appendFileSync } = require('fs');
 const { pathToZip } = require('./utils/files/zip');
+const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearAttemps } = require('./utils/global/functions')
 
 (async () => {
   if (isMainThread) {
     const worker = new Worker(__filename, {
       workerData: {
-        values: [],
         __root_dir: process.cwd()
       }
     })
@@ -34,7 +34,8 @@ const { pathToZip } = require('./utils/files/zip');
     })
     setVariables(workerData.__root_dir)
     workerEvents()
-    const data = workerData
+    const data = [] // ARRAY COM OS DADOS A PROCESSAR
+    setTotalItens(data.values.length)
     while (true) {
       const execution = await app(data, SELECTORS, parentPort.postMessage.bind(parentPort))
 
@@ -50,23 +51,29 @@ const { pathToZip } = require('./utils/files/zip');
           if (global.attempts > 3) {
             appendFileSync(fileError, messageError)
             data.values = data.values.filter((_, index) => index > execution.lastIndex)
-            global.attempts = 0
+            clearAttemps(0)
+            setProcessedItens(execution.lastIndex)
+            parentPort.postMessage({ message: `Erro ao processar ${data.values[execution.lastIndex]?.RAZAO}`, progress: getProgress() })
             continue
           }
           data.values = data.values.filter((_, index) => index >= execution.lastIndex)
-          global.attempts++
+          incrementsAttemps(1)
           continue
         }
         appendFileSync(fileError, messageError)
         data.values = data.values.filter((_, index) => index > execution.lastIndex)
-        global.attempts = 0
+        clearAttemps(0)
+        setProcessedItens(execution.lastIndex)
+        parentPort.postMessage({ message: `Erro ao processar ${data.values[execution.lastIndex]?.RAZAO}`, progress: getProgress() })
         continue
       }
       break
     }
 
     rmSync(global.PATH_TEMP, { force: true, recursive: true })
+    // rmSync(global.PATH_ENTRADA, { force: true, recursive: true })
     await pathToZip(parse(global.ROOT_DIR).name + '.zip', global.PATH_SAIDA)
+    // rmSync(global.PATH_SAIDA, { force: true, recursive: true })
     process.exit()
   }
 })()
