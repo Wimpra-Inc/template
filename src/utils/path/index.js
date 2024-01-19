@@ -1,4 +1,4 @@
-const { existsSync, mkdirSync } = require('fs')
+const { rmSync, existsSync, mkdirSync } = require('fs');
 
 module.exports = {
   createDirectory: function (path, removeIfExists = false) {

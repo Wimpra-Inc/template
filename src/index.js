@@ -7,7 +7,7 @@ const setVariables = require('./setVariables')
 const { join, parse } = require('path')
 const { rmSync, appendFileSync } = require('fs');
 const { pathToZip } = require('./utils/files/zip');
-const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearAttemps } = require('./utils/global/functions')
+const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearAttemps } = require('./utils/global/functions');
 
 (async () => {
   if (isMainThread) {
@@ -71,9 +71,9 @@ const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearA
     }
 
     rmSync(global.PATH_TEMP, { force: true, recursive: true })
-    // rmSync(global.PATH_ENTRADA, { force: true, recursive: true })
-    await pathToZip(parse(global.ROOT_DIR).name + '.zip', global.PATH_SAIDA)
-    // rmSync(global.PATH_SAIDA, { force: true, recursive: true })
+    rmSync(global.PATH_ENTRADA, { force: true, recursive: true })
+    pathToZip(join(global.ROOT_DIR, (parse(global.ROOT_DIR).name + '.zip')), global.PATH_SAIDA)
+    rmSync(global.PATH_SAIDA, { force: true, recursive: true })
     process.exit()
   }
 })()
