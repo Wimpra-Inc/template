@@ -10,7 +10,7 @@ const {BrowserConnectionError,DownloadTimeoutError, PageError} = require('./erro
  */
 module.exports = async (data, selectors, log) => {
   try {
-    let browser, page, index
+    let browser, page
     ({ browser } = await makeBrowser())
     try {
       ({ page } = await makePage(browser))
@@ -46,7 +46,7 @@ module.exports = async (data, selectors, log) => {
           continue: true,
           error: error.message,
           repeat: true,
-          lastIndex: index
+          lastIndex: data.currentIndex
         }
       }
 
@@ -64,7 +64,7 @@ module.exports = async (data, selectors, log) => {
           continue: true,
           repeat: false,
           error: `${currentData?.RAZAO};${currentData?.CNPJ};${error.message}`,
-          lastIndex
+          lastIndex: data.currentIndex
         }
       }
 
@@ -72,7 +72,7 @@ module.exports = async (data, selectors, log) => {
         status: false,
         continue: true,
         repeat: true,
-        lastIndex: index,
+        lastIndex: data.currentIndex,
         error: error?.message
       }
     }

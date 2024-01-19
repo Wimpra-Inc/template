@@ -34,7 +34,11 @@ const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearA
     })
     setVariables(workerData.__root_dir)
     workerEvents()
-    const data = [] // ARRAY COM OS DADOS A PROCESSAR
+    const data = {
+        currentIndex: 0,
+        values: [],
+        ...workerData,
+    } // ARRAY COM OS DADOS A PROCESSAR
     setTotalItens(data.values.length)
     while (true) {
       const execution = await app(data, SELECTORS, parentPort.postMessage.bind(parentPort))
@@ -50,20 +54,19 @@ const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearA
         if (execution.repeat) {
           if (global.attempts > 3) {
             appendFileSync(fileError, messageError)
-            data.values = data.values.filter((_, index) => index > execution.lastIndex)
             clearAttemps(0)
             setProcessedItens(execution.lastIndex)
+            data.currentIndex = execution.lastIndex + 1
             parentPort.postMessage({ message: `Erro ao processar ${data.values[execution.lastIndex]?.RAZAO}`, progress: getProgress() })
             continue
           }
-          data.values = data.values.filter((_, index) => index >= execution.lastIndex)
           incrementsAttemps(1)
           continue
         }
         appendFileSync(fileError, messageError)
-        data.values = data.values.filter((_, index) => index > execution.lastIndex)
         clearAttemps(0)
         setProcessedItens(execution.lastIndex)
+        data.currentIndex = execution.lastIndex + 1
         parentPort.postMessage({ message: `Erro ao processar ${data.values[execution.lastIndex]?.RAZAO}`, progress: getProgress() })
         continue
       }
