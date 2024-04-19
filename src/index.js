@@ -20,6 +20,7 @@ const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearA
       path: join(parse(__dirname).dir, '.env')
     })
     worker.on('message', (message) => {
+      message = typeof message === 'object' ? JSON.stringify(message) : message
       process.stdout.write(message + '\n')
       if (process.env.CREATE_CONSOLE_FILE === 'false') return true
       appendFileSync(join(process.cwd(), 'saida', 'console.txt'), `${message}\n`)
@@ -36,7 +37,7 @@ const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearA
     workerEvents()
     const data = {
         currentIndex: 0,
-        values: [],
+        values: Array.from({ length: 10 }, (_, i) => i),
         ...workerData,
     } // ARRAY COM OS DADOS A PROCESSAR
     setTotalItens(data.values.length)
@@ -57,7 +58,7 @@ const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearA
             clearAttemps(0)
             setProcessedItens(execution.lastIndex)
             data.currentIndex = execution.lastIndex + 1
-            parentPort.postMessage({ message: `Erro ao processar ${data.values[execution.lastIndex]?.RAZAO}`, progress: getProgress() })
+            parentPort.postMessage({ message: messageError, progress: getProgress() })
             continue
           }
           incrementsAttemps(1)
@@ -67,7 +68,7 @@ const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearA
         clearAttemps(0)
         setProcessedItens(execution.lastIndex)
         data.currentIndex = execution.lastIndex + 1
-        parentPort.postMessage({ message: `Erro ao processar ${data.values[execution.lastIndex]?.RAZAO}`, progress: getProgress() })
+        parentPort.postMessage({ message: messageError, progress: getProgress() })
         continue
       }
       break
