@@ -2,7 +2,8 @@ const makeBrowser = require('./factories/makeBrowser')
 const { WrongUserKey, ZeroBalance } = require('./errors/captcha')
 const makePage = require('./factories/makePage')
 const { BrowserConnectionError, DownloadTimeoutError, PageError } = require('./errors/browser')
-const { getProgress, setProcessedItens, clearAttemps } = require('./utils/global/functions')
+const { getProgress, clearAttemps, setProcessedItens } = require('./utils/global/functions')
+const connection = require('./database/connection');
 /**
  *
  * @param {{values : Array, __root_dir : string, currentIndex: number}} data
@@ -11,22 +12,33 @@ const { getProgress, setProcessedItens, clearAttemps } = require('./utils/global
  */
 module.exports = async (data, selectors, log) => {
     try {
-        let browser, page
+        let browser, page, razao
+        const conn = await connection();
         ({ browser } = await makeBrowser())
         try {
             ({ page } = await makePage(browser))
-            for (const [index, value] of Object.entries(data.values.slice(data.currentIndex))) {
+            const values = await conn.table('processing').select('*').where('processed', false)
+
+            for (const [index, value] of Object.entries(values)) {
+                console.log(value)
+                data.currentIndex = value.id
+                razao = value?.razao
                 await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
-                data.currentIndex += 1
-                setProcessedItens(data.currentIndex)
+
+                throw new Error('Erro')
+
                 clearAttemps()
-                log({ message: 'DADOS PROCESSADOS', progress: getProgress() })
+                await setProcessedItens(data.currentIndex)
+                log({ message: 'DADOS PROCESSADOS', progress: await getProgress() })
             }
             await browser.close()
             return {
                 status: true
             }
         } catch (error) {
+            await page.clearAllCookies()
+            await browser.closeAllPages()
+
             if (error instanceof WrongUserKey) {
                 return {
                     status: false,
@@ -46,7 +58,7 @@ module.exports = async (data, selectors, log) => {
                 return {
                     status: false,
                     continue: true,
-                    error: error.message,
+                    error: `${razao} - ${error.message}`,
                     repeat: true,
                     lastIndex: data.currentIndex
                 }
@@ -56,7 +68,7 @@ module.exports = async (data, selectors, log) => {
                 return {
                     status: false,
                     continue: false,
-                    error: error.message
+                    error: `${razao} - ${error.message}`,
                 }
             }
 
@@ -65,7 +77,7 @@ module.exports = async (data, selectors, log) => {
                     status: false,
                     continue: true,
                     repeat: false,
-                    error: error.message,
+                    error: `${razao} - ${error.message}`,
                     lastIndex: data.currentIndex
                 }
             }
@@ -75,10 +87,11 @@ module.exports = async (data, selectors, log) => {
                 continue: true,
                 repeat: true,
                 lastIndex: data.currentIndex,
-                error: error?.message
+                error: `${razao} - ${error.message}`,
             }
         }
     } catch (error) {
+        console.log(error)
         log('Erro ao inicializar robo')
         return {
             status: false,

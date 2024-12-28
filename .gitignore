@@ -189,7 +189,10 @@ entrada/
 saida/
 temp/
 .vscode/
+processando/
 
 
 *.zip
 *.rar
+
+*.sqlite

@@ -1,31 +1,39 @@
-function setProgress () {
-    global.PROGRESS = ((global.PROCESSED_ITENS) * 100) / global.TOTAL_ITENS
-  }
+const connection = require("../../database/connection")
 
-  function incrementsAttemps (attempts) {
+function incrementsAttemps(attempts) {
     global.ATTEMPTS += attempts
-  }
+}
 
-  function clearAttemps () {
+function clearAttemps() {
     global.ATTEMPTS = 0
-  }
-  function setTotalItens (total) {
+}
+
+function getAttemps() {
+    return global.ATTEMPTS
+}
+async function setTotalItens() {
+    const conn = await connection()
+    const [{ total }] = await conn.table('processing').count('* as total')
     global.TOTAL_ITENS = total
-  }
-  function setProcessedItens (processed) {
-    global.PROCESSED_ITENS = processed
-    setProgress()
-  }
+}
+async function setProcessedItens(id) {
+    const conn = await connection()
+    await conn.table('processing').update('processed', true).where('id', id)
+    global.PROCESSED_ITENS += 1
+}
 
-  function getProgress () {
-    return global.PROGRESS
-  }
+async function getProgress() {
+    const conn = await connection()
+    const [{ progress }] = await conn.table('processing').where('processed', true).count('* as progress')
 
-  module.exports = {
-    setProgress,
+    return (progress / global.TOTAL_ITENS * 100) || 0
+}
+
+module.exports = {
     incrementsAttemps,
     setTotalItens,
     setProcessedItens,
     getProgress,
-    clearAttemps
-  }
+    clearAttemps,
+    getAttemps,
+}
