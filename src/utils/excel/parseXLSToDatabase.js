@@ -8,5 +8,5 @@ module.exports = async (path, sheetName) => {
         processed: false,
     }))
     const conn = await connection()
-    await conn.batchInsert('processing', data, 1000)
+    await conn.batchInsert('processing', data, 100)
 }

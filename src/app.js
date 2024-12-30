@@ -4,6 +4,7 @@ const makePage = require('./factories/makePage')
 const { BrowserConnectionError, DownloadTimeoutError, PageError } = require('./errors/browser')
 const { getProgress, clearAttemps, setProcessedItens } = require('./utils/global/functions')
 const connection = require('./database/connection');
+const gerarCSV = require('./utils/excel/gerarCSV')
 /**
  *
  * @param {{values : Array, __root_dir : string, currentIndex: number}} data
@@ -25,12 +26,12 @@ module.exports = async (data, selectors, log) => {
                 razao = value?.razao
                 await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
 
-                throw new Error('Erro')
-
                 clearAttemps()
                 await setProcessedItens(data.currentIndex)
                 log({ message: 'DADOS PROCESSADOS', progress: await getProgress() })
             }
+
+            gerarCSV()
             await browser.close()
             return {
                 status: true

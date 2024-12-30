@@ -3,13 +3,13 @@ const { workerData, Worker, isMainThread, parentPort } = require('worker_threads
 const app = require('./app')
 const SELECTORS = require('../selectors.json')
 const workerEvents = require('./events/workerEvents')
-const setVariables = require('./setVariables')
 const { join, parse } = require('path')
 const { rmSync, appendFileSync } = require('fs');
 const { pathToZip } = require('./utils/files/zip');
 const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearAttemps, getAttemps } = require('./utils/global/functions');
 const reset = require('./database/reset');
 const parseXLSToDatabase = require('./utils/excel/parseXLSToDatabase');
+const { setVariables, createDefaultDirectories, removeDefaultDirectories } = require('./default');
 
 (async () => {
     if (isMainThread) {
@@ -17,7 +17,6 @@ const parseXLSToDatabase = require('./utils/excel/parseXLSToDatabase');
             workerData: {
                 __root_dir: process.cwd(),
                 restart: true,
-                importData: true,
                 sheetName: 'PRO-LABORE'
             }
         })
@@ -39,13 +38,11 @@ const parseXLSToDatabase = require('./utils/excel/parseXLSToDatabase');
             path: join(workerData.__root_dir, '.env')
         })
         setVariables(workerData.__root_dir)
+        createDefaultDirectories(workerData.restart)
         workerEvents()
 
         if (workerData.restart) {
             await reset()
-        }
-
-        if (workerData.importData) {
             await parseXLSToDatabase(global.PATH_ENTRADA, workerData?.sheetName)
         }
 
@@ -89,10 +86,8 @@ const parseXLSToDatabase = require('./utils/excel/parseXLSToDatabase');
             break
         }
 
-        rmSync(global.PATH_TEMP, { force: true, recursive: true })
-        //rmSync(global.PATH_ENTRADA, { force: true, recursive: true })
         pathToZip(join(global.ROOT_DIR, (parse(global.ROOT_DIR).name + '.zip')), global.PATH_SAIDA)
-        rmSync(global.PATH_SAIDA, { force: true, recursive: true })
+        removeDefaultDirectories(workerData.restart)
         process.exit()
     }
 })()
