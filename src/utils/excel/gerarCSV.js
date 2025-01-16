@@ -7,7 +7,7 @@ module.exports = async () => {
 
     let dados = await conn.table('processing').where({ processed: true }).select('dados').distinct()
 
-    dados = dados.flatMap(dado => JSON.parse(dado.dados)).map(dado => Object.values(dado).join(';')).join('\n')
+    dados = dados.flatMap(dado => dado.dados ? JSON.parse(dado.dados) : []).map(dado => Object.values(dado).join(';')).join('\n')
 
     appendFileSync(join(global.PATH_SAIDA, 'dados.csv'), dados)
 
