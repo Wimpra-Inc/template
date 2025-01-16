@@ -16,7 +16,7 @@ class PuppeteerAdapter {
       * @returns {import('puppeteer-core').Browser & {closeAllPages: Function}}
       */
     async handleBrowser(config) {
-        if (global.browser && global.browser.isConnected()) return global.browser / usr / bin / google - chrome - stable
+        if (global.browser && global.browser.isConnected()) return global.browser
 
         if (env.CREATE_BROWSER_BY_WS_ENDPOINT) {
             const chromeCommandStart = this.#getChromeCommandStart()

@@ -4,7 +4,7 @@ const app = require('./app')
 const SELECTORS = require('../selectors.json')
 const workerEvents = require('./events/workerEvents')
 const { join, parse } = require('path')
-const { rmSync, appendFileSync } = require('fs');
+const { appendFileSync } = require('fs');
 const { pathToZip } = require('./utils/files/zip');
 const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearAttemps, getAttemps } = require('./utils/global/functions');
 const reset = require('./database/reset');
@@ -17,7 +17,7 @@ const { setVariables, createDefaultDirectories, removeDefaultDirectories } = req
             workerData: {
                 __root_dir: process.cwd(),
                 restart: true,
-                sheetName: 'PRO-LABORE'
+                sheetName: 'Planilha1'
             }
         })
         require('dotenv').config({
@@ -47,7 +47,6 @@ const { setVariables, createDefaultDirectories, removeDefaultDirectories } = req
         }
 
         const data = {
-            currentIndex: 0,
             ...workerData,
         } // ARRAY COM OS DADOS A PROCESSAR
         await setTotalItens()
@@ -69,7 +68,6 @@ const { setVariables, createDefaultDirectories, removeDefaultDirectories } = req
                         appendFileSync(fileError, messageError)
                         clearAttemps(0)
                         await setProcessedItens(execution.lastIndex)
-                        data.currentIndex = execution.lastIndex + 1
                         parentPort.postMessage({ message: messageError, progress: await getProgress() })
                         continue
                     }
@@ -79,7 +77,6 @@ const { setVariables, createDefaultDirectories, removeDefaultDirectories } = req
                 appendFileSync(fileError, messageError)
                 clearAttemps(0)
                 await setProcessedItens(execution.lastIndex)
-                data.currentIndex = execution.lastIndex + 1
                 parentPort.postMessage({ message: messageError, progress: await getProgress() })
                 continue
             }

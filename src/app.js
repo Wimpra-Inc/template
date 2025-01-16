@@ -13,7 +13,7 @@ const gerarCSV = require('./utils/excel/gerarCSV')
  */
 module.exports = async (data, selectors, log) => {
     try {
-        let browser, page, razao
+        let browser, page, razao, lastIndex;
         const conn = await connection();
         ({ browser } = await makeBrowser())
         try {
@@ -22,12 +22,12 @@ module.exports = async (data, selectors, log) => {
 
             for (const [index, value] of Object.entries(values)) {
                 console.log(value)
-                data.currentIndex = value.id
+                lastIndex = value.id
                 razao = value?.razao
-                await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
+                //await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
 
                 clearAttemps()
-                await setProcessedItens(data.currentIndex)
+                await setProcessedItens(lastIndex)
                 log({ message: 'DADOS PROCESSADOS', progress: await getProgress() })
             }
 
@@ -61,7 +61,7 @@ module.exports = async (data, selectors, log) => {
                     continue: true,
                     error: `${razao} - ${error.message}`,
                     repeat: true,
-                    lastIndex: data.currentIndex
+                    lastIndex
                 }
             }
 
@@ -79,7 +79,7 @@ module.exports = async (data, selectors, log) => {
                     continue: true,
                     repeat: false,
                     error: `${razao} - ${error.message}`,
-                    lastIndex: data.currentIndex
+                    lastIndex
                 }
             }
 
@@ -87,7 +87,7 @@ module.exports = async (data, selectors, log) => {
                 status: false,
                 continue: true,
                 repeat: true,
-                lastIndex: data.currentIndex,
+                lastIndex,
                 error: `${razao} - ${error.message}`,
             }
         }
