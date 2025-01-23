@@ -1,9 +1,11 @@
-require('dotenv').config()
 const { workerData, Worker, isMainThread, parentPort } = require('worker_threads')
+const { join, parse } = require('path')
+require('dotenv').config({
+    path: isMainThread ? join(parse(__dirname).dir, '.env') : join(workerData.__root_dir, '.env')
+})
 const app = require('./app')
 const SELECTORS = require('../selectors.json')
 const workerEvents = require('./events/workerEvents')
-const { join, parse } = require('path')
 const { appendFileSync } = require('fs');
 const { pathToZip } = require('./utils/files/zip');
 const { incrementsAttemps, setTotalItens, setProcessedItens, getProgress, clearAttemps, getAttemps } = require('./utils/global/functions');
@@ -20,9 +22,6 @@ const { setVariables, createDefaultDirectories, removeDefaultDirectories } = req
                 sheetName: 'Planilha1'
             }
         })
-        require('dotenv').config({
-            path: join(parse(__dirname).dir, '.env')
-        })
         worker.on('message', (message) => {
             message = typeof message === 'object' ? JSON.stringify(message) : message
             process.stdout.write(message + '\n')
@@ -34,9 +33,6 @@ const { setVariables, createDefaultDirectories, removeDefaultDirectories } = req
         worker.on('error', (error) => console.log(error))
         // worker.postMessage('close')
     } else {
-        require('dotenv').config({
-            path: join(workerData.__root_dir, '.env')
-        })
         setVariables(workerData.__root_dir)
         createDefaultDirectories(workerData.restart)
         workerEvents()
