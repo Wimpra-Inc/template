@@ -9,6 +9,7 @@ module.exports = async () => {
         table.string('razao').notNullable()
         table.string('cnpj').notNullable()
         table.text('dados').nullable()
+        table.text('cookies').nullable()
         table.boolean('processed').defaultTo(false)
     })
 
