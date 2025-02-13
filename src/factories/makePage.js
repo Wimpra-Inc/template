@@ -1,8 +1,8 @@
-const PuppeteerAdapter = require('../adapters/puppeteer/PuppeteerAdapter')
-const { env } = require('../env')
+const PuppeteerAdapter = require("../adapters/puppeteer/PuppeteerAdapter");
+const { env } = require("../env");
 
 module.exports = async function (browser) {
-    const puppeteerAdapter = new PuppeteerAdapter()
+    const puppeteerAdapter = new PuppeteerAdapter();
     const page = await puppeteerAdapter.handlePage(browser, {
         args: env.ARGS,
         executablePath: env.EXECUTABLE_PATH,
@@ -14,8 +14,9 @@ module.exports = async function (browser) {
         defaultTimeout: env.SET_DEFAULT_TIMEOUT,
         defaultNavigationTimeout: env.SET_DEFAULT_NAVIGATION_TIMEOUT,
         ignoreDefaultArgs: env.IGNORE_DEFAULT_ARGS,
-    })
+        pathDownload: env.PATH_DOWNLOAD,
+    });
     return {
-        page
-    }
-}
+        page,
+    };
+};
