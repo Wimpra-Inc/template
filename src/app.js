@@ -1,10 +1,15 @@
-const makeBrowser = require('./factories/makeBrowser')
-const { WrongUserKey, ZeroBalance } = require('./errors/captcha')
-const makePage = require('./factories/makePage')
-const { BrowserConnectionError, DownloadTimeoutError, PageError } = require('./errors/browser')
-const { getProgress, clearAttemps, setProcessedItens } = require('./utils/global/functions')
-const connection = require('./database/connection');
-const gerarCSV = require('./utils/excel/gerarCSV')
+const makeBrowser = require("./factories/makeBrowser");
+const { WrongUserKey, ZeroBalance } = require("./errors/captcha");
+const makePage = require("./factories/makePage");
+const {
+    BrowserConnectionError,
+    DownloadTimeoutError,
+    PageError,
+} = require("./errors/browser");
+const { getProgress, setProcessedItens } = require("./utils/global/functions");
+const connection = require("./database/connection");
+const gerarCSV = require("./utils/excel/gerarCSV");
+const { setTimeout } = require("timers/promises");
 /**
  *
  * @param {{values : Array, __root_dir : string, currentIndex: number}} data
@@ -15,44 +20,51 @@ module.exports = async (data, selectors, log) => {
     try {
         let browser, page, razao, lastIndex;
         const conn = await connection();
-        ({ browser } = await makeBrowser())
+        ({ browser } = await makeBrowser());
         try {
-            ({ page } = await makePage(browser))
-            const values = await conn.table('processing').select('*').where('processed', false)
+            ({ page } = await makePage(browser));
+            const values = await conn
+                .table("processing")
+                .select("*")
+                .where("processed", false)
+                .orderBy("id");
 
             for (const [index, value] of Object.entries(values)) {
-                console.log(value)
-                lastIndex = value.id
-                razao = value?.razao
+                console.log(value);
+                lastIndex = value.id;
+                razao = value?.razao;
                 //await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
+                await setTimeout(1500);
 
-                clearAttemps()
-                await setProcessedItens(lastIndex)
-                log({ message: 'DADOS PROCESSADOS', progress: await getProgress() })
+                await setProcessedItens(lastIndex);
+                log({
+                    message: `${razao} PROCESSADO`,
+                    progress: await getProgress(),
+                });
             }
 
-            gerarCSV()
-            await browser.close()
+            gerarCSV();
+            await browser.close();
             return {
-                status: true
-            }
+                status: true,
+            };
         } catch (error) {
-            await page.clearAllCookies()
-            await browser.closeAllPages()
+            await page.clearAllCookies();
+            await browser.closeAllPages();
 
             if (error instanceof WrongUserKey) {
                 return {
                     status: false,
                     continue: false,
-                    error: error.message
-                }
+                    error: error.message,
+                };
             }
             if (error instanceof ZeroBalance) {
                 return {
                     status: false,
                     continue: false,
-                    error: error.message
-                }
+                    error: error.message,
+                };
             }
 
             if (error instanceof DownloadTimeoutError) {
@@ -61,8 +73,8 @@ module.exports = async (data, selectors, log) => {
                     continue: true,
                     error: `${razao} - ${error.message}`,
                     repeat: true,
-                    lastIndex
-                }
+                    lastIndex,
+                };
             }
 
             if (error instanceof BrowserConnectionError) {
@@ -70,7 +82,7 @@ module.exports = async (data, selectors, log) => {
                     status: false,
                     continue: false,
                     error: `${razao} - ${error.message}`,
-                }
+                };
             }
 
             if (error instanceof PageError) {
@@ -79,8 +91,8 @@ module.exports = async (data, selectors, log) => {
                     continue: true,
                     repeat: false,
                     error: `${razao} - ${error.message}`,
-                    lastIndex
-                }
+                    lastIndex,
+                };
             }
 
             return {
@@ -89,15 +101,15 @@ module.exports = async (data, selectors, log) => {
                 repeat: true,
                 lastIndex,
                 error: `${razao} - ${error.message}`,
-            }
+            };
         }
     } catch (error) {
-        console.log(error)
-        log('Erro ao inicializar robo')
+        console.log(error);
+        log("Erro ao inicializar robo");
         return {
             status: false,
             continue: false,
-            error: error?.message
-        }
+            error: error?.message,
+        };
     }
-}
+};
