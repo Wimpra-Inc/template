@@ -23,6 +23,7 @@ module.exports = {
   },
   rules: {
     'prefer-const': 'warn',
-    'no-unused-expressions': 'off'
+    'no-unused-expressions': 'off',
+    'no-unused-vars': 'warn'
   }
 }
