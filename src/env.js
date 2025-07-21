@@ -29,13 +29,13 @@ const envSchema = z.object({
     .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
       message: 'O campo MUST_START_AT deve estar no formato "hh:mm"'
     })
-    .nullable(),
+    .optional(),
   MUST_FINISH_AT: z
     .string()
     .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
       message: 'O campo MUST_START_AT deve estar no formato "hh:mm"'
     })
-    .nullable()
+    .optional()
 })
 
 const env = envSchema.parse(process.env)

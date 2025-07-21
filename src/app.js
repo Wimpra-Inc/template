@@ -52,7 +52,8 @@ module.exports = async (data, selectors, log) => {
         status: true
       }
     } catch (error) {
-      await page.clearAllCookies()
+      console.log(error)
+      // await page.clearAllCookies()
       await browser.closeAllPages()
 
       if (error instanceof WrongUserKey) {

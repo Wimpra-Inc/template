@@ -38,6 +38,9 @@ module.exports = async function waitForInterval (
   intervaloVerificacao = 60000
 ) {
   return new Promise((resolve) => {
+    if (!horaInicio && !horaFim) {
+      resolve()
+    }
     const verificar = () => {
       if (verificarHorarioExecucao(horaInicio, horaFim)) {
         resolve()
