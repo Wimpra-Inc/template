@@ -18,6 +18,7 @@ Este projeto é um template para criação de robôs de automação web que proc
 -   **Tratamento de Erros**: Sistema robusto de tratamento e recuperação de erros
 -   **Monitoramento de Progresso**: Acompanhamento em tempo real do processamento
 -   **Compactação**: Geração automática de arquivos ZIP com resultados
+-   **Controle de Horário**: Verificação e aguardo de horários específicos para execução
 
 ### Utilitários
 
@@ -25,6 +26,7 @@ Este projeto é um template para criação de robôs de automação web que proc
 -   **Requisições HTTP**: Cliente HTTP para APIs externas
 -   **Gestão de Arquivos**: Operações com arquivos ZIP e diretórios
 -   **Configuração Flexível**: Sistema de variáveis de ambiente com validação
+-   **Controle de Horário**: Funções para verificar e aguardar horários específicos
 
 ## 📁 Estrutura do Projeto
 
@@ -49,7 +51,7 @@ template/
 │   │   ├── captcha/                   # Utilitários de captcha
 │   │   ├── excel/                     # Processamento de Excel
 │   │   ├── files/                     # Operações com arquivos
-│   │   ├── global/                    # Funções globais
+│   │   ├── global/                    # Funções globais (incluindo controle de horário)
 │   │   ├── path/                      # Utilitários de caminhos
 │   │   ├── request/                   # Cliente HTTP
 │   │   ├── string/                    # Utilitários de string
@@ -149,6 +151,24 @@ npm start
 -   Um arquivo ZIP será gerado automaticamente
 -   Logs serão salvos em `saida/console.txt`
 
+## ⏰ Controle de Horário
+
+O sistema inclui funcionalidades para controlar quando o robô deve executar, baseado em horários específicos.
+
+### Características Especiais
+
+✅ **Suporte a horários que passam pela meia-noite** (ex: 22:00 às 06:00)
+✅ **Verificação automática** a cada minuto (ou intervalo personalizado)
+✅ **Fácil integração** com código existente
+✅ **Documentação completa** com JSDoc
+
+### Casos de Uso
+
+-   **Horário comercial**: Executar apenas durante o horário de trabalho
+-   **Horário noturno**: Processar dados durante a madrugada
+-   **Janelas específicas**: Executar em horários de menor tráfego
+-   **Controle de custos**: Evitar execução em horários de pico
+
 ## 📊 Estrutura de Dados
 
 ### Planilha de Entrada
@@ -177,11 +197,9 @@ Edite o arquivo `selectors.json` para configurar os seletores CSS usados na auto
 ```json
 {
     "site_url": "https://exemplo.com",
-    "selectors": {
-        "campo_cnpj": "#cnpj",
-        "botao_pesquisar": "#pesquisar",
-        "resultado": ".resultado"
-    }
+    "campo_cnpj": "#cnpj",
+    "botao_pesquisar": "#pesquisar",
+    "resultado": ".resultado"
 }
 ```
 
