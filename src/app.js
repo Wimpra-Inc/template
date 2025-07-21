@@ -10,6 +10,8 @@ const { getProgress, setProcessedItens } = require('./utils/global/functions')
 const connection = require('./database/connection')
 const gerarCSV = require('./utils/excel/gerarCSV')
 const { setTimeout } = require('timers/promises')
+const waitForInterval = require('./utils/date/waitForInterval')
+const { env } = require('./env')
 /**
  *
  * @param {{values : Array, __root_dir : string, currentIndex: number}} data
@@ -30,6 +32,7 @@ module.exports = async (data, selectors, log) => {
         .orderBy('id')
 
       for (const [, value] of Object.entries(values)) {
+        await waitForInterval(env.MUST_START_AT, env.MUST_FINISH_AT)
         console.log(value)
         lastIndex = value.id
         razao = value?.razao
