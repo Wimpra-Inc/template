@@ -35,7 +35,8 @@ const envSchema = z.object({
     .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
       message: 'O campo MUST_START_AT deve estar no formato "hh:mm"'
     })
-    .optional()
+    .optional(),
+  CHROME_PROFILE_DIRECTORY: z.string().nullable()
 })
 
 const env = envSchema.parse(process.env)

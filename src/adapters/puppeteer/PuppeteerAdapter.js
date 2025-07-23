@@ -168,7 +168,8 @@ class PuppeteerAdapter {
             process.platform === 'win32'
               ? `"${env.EXECUTABLE_PATH}"`
               : `${env.EXECUTABLE_PATH}`
-    return `${executablePath} --remote-debugging-port=${url.port} --user-data-dir="${env.USER_DATA_DIR}"`
+
+    return `${executablePath} --remote-debugging-port=${url.port} --user-data-dir="${env.USER_DATA_DIR}" --profile-direcotry="${env.CHROME_PROFILE_DIRECTORY}"`
   }
 }
 

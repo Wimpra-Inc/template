@@ -37,8 +37,8 @@ module.exports = async (data, selectors, log) => {
         console.log(value)
         lastIndex = value.id
         razao = value?.razao
-        // await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
-        await setTimeout(1500)
+        await page.goto(selectors.site_url, { waitUntil: 'networkidle0' })
+        await setTimeout(150000)
 
         await setProcessedItens(lastIndex)
         log({
