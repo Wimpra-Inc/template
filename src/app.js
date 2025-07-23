@@ -112,7 +112,7 @@ module.exports = async (data, selectors, log) => {
     log('Erro ao inicializar robo')
     return {
       status: false,
-      continue: false,
+      continue: true,
       error: error?.message
     }
   }
