@@ -1,6 +1,6 @@
 const { parentPort } = require('worker_threads')
-const { pathToZip } = require('../utils/files/zip');
-const { parse } = require('path');
+const { pathToZip } = require('../utils/files/zip')
+const { parse } = require('path')
 /**
  *
  * @param events {string[]}
@@ -9,7 +9,7 @@ const { parse } = require('path');
 module.exports = function (rootDir) {
   parentPort.on('message', async (message) => {
     if (message === 'close') {
-      await pathToZip(parse(global.ROOT_DIR).name + '.zip', global.PATH_SAIDA)
+      await pathToZip(parse(global.app.ROOT_DIR).name + '.zip', global.app.PATH_SAIDA)
       process.exit()
     }
   })

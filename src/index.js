@@ -62,7 +62,7 @@ const {
     if (workerData.restart) {
       await reset()
       await parseXLSToDatabase(
-        global.PATH_ENTRADA,
+        global.app.PATH_ENTRADA,
         workerData?.sheetName
       )
     }
@@ -81,7 +81,7 @@ const {
 
       if (!execution.status) {
         const messageError = `${execution?.error}\n`
-        const fileError = join(global.PATH_SAIDA, 'erros.csv')
+        const fileError = join(global.app.PATH_SAIDA, 'erros.csv')
 
         if (!execution.continue) {
           appendFileSync(fileError, messageError)
@@ -113,8 +113,8 @@ const {
     }
 
     pathToZip(
-      join(global.ROOT_DIR, parse(global.ROOT_DIR).name + '.zip'),
-      global.PATH_SAIDA
+      join(global.app.ROOT_DIR, parse(global.app.ROOT_DIR).name + '.zip'),
+      global.app.PATH_SAIDA
     )
     process.exit()
   }

@@ -1,11 +1,9 @@
 const { join } = require('path')
 const knex = require('knex')
 
-global.connection = null
-
 async function isConnected () {
   try {
-    await global.connection.raw('select 1')
+    await global.app.CONNECTION.raw('select 1')
     return true
   } catch (error) {
     return false
@@ -17,15 +15,15 @@ async function isConnected () {
  */
 module.exports = async () => {
   if (await isConnected()) {
-    return global.connection
+    return global.app.CONNECTION
   }
-  global.connection = knex({
+  global.app.CONNECTION = knex({
     client: 'sqlite3',
     connection: {
-      filename: join(global.PATH_PROCESSANDO, 'database.sqlite')
+      filename: join(global.app.PATH_PROCESSANDO, 'database.sqlite')
     },
     useNullAsDefault: true
   })
 
-  return global.connection
+  return global.app.CONNECTION
 }

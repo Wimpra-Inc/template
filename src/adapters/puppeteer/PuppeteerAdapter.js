@@ -15,8 +15,8 @@ class PuppeteerAdapter {
      * @returns {import('puppeteer-core').Browser & {closeAllPages: Function}}
      */
   async handleBrowser (config) {
-    if (global.browser && global.browser.isConnected()) {
-      return global.browser
+    if (global.app.BROWSER && global.app.BROWSER.connected) {
+      return global.app.BROWSER
     }
 
     if (env.CREATE_BROWSER_BY_WS_ENDPOINT) {
@@ -29,20 +29,20 @@ class PuppeteerAdapter {
           'Não foi possível obter o webSocketDebuggerUrl'
         )
       }
-      global.browser = await puppeteer.connect({
+      global.app.BROWSER = await puppeteer.connect({
         browserWSEndpoint: webSocketDebuggerUrl,
         ...config
       })
 
-      global.browser.closeAllPages = () =>
-        this.closeAllPages(global.browser)
+      global.app.BROWSER.closeAllPages = () =>
+        this.closeAllPages(global.app.BROWSER)
 
-      return global.browser
+      return global.app.BROWSER
     }
-    global.browser = await puppeteer.launch(config)
-    global.browser.closeAllPages = () => this.closeAllPages(global.browser)
+    global.app.BROWSER = await puppeteer.launch(config)
+    global.app.BROWSER.closeAllPages = () => this.closeAllPages(global.app.BROWSER)
 
-    return global.browser
+    return global.app.BROWSER
   }
 
   /**
