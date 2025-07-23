@@ -19,8 +19,9 @@ const { env } = require('./env')
  * @param {Function(string)} log
  */
 module.exports = async (data, selectors, log) => {
+  let lastIndex = 0
   try {
-    let browser, page, razao, lastIndex
+    let browser, page, razao
     const conn = await connection();
     ({ browser } = await makeBrowser())
     try {
@@ -113,7 +114,8 @@ module.exports = async (data, selectors, log) => {
     return {
       status: false,
       continue: true,
-      error: error?.message
+      error: error?.message,
+      lastIndex
     }
   }
 }
