@@ -41,6 +41,8 @@ const envSchema = z.object({
 
 const env = envSchema.parse(process.env)
 
+env.ARGS.push(`--profile-directory=${env.CHROME_PROFILE_DIRECTORY}`)
+
 module.exports = {
   env
 }
