@@ -20,8 +20,9 @@ const { env } = require('./env')
  */
 module.exports = async (data, selectors, log) => {
   let lastIndex = 0
+  let browser
   try {
-    let browser, page, razao
+    let page, razao
     const conn = await connection();
     ({ browser } = await makeBrowser())
     try {
@@ -111,6 +112,7 @@ module.exports = async (data, selectors, log) => {
   } catch (error) {
     console.log(error)
     log('Erro ao inicializar robo')
+    await browser?.close()
     return {
       status: false,
       continue: true,
