@@ -74,7 +74,10 @@ const {
 
     while (true) {
       const execution = await app(
-        data,
+        {
+          ...data,
+          restart: !getAttemps()
+        },
         SELECTORS,
         parentPort.postMessage.bind(parentPort)
       )
