@@ -32,7 +32,11 @@ async function getProgress () {
     .where('processed', true)
     .count('* as progress')
 
-  return (progress / global.app.TOTAL_ITENS) * 100 || 0
+  return {
+    percentage: (progress / global.app.TOTAL_ITENS) * 100 || 0,
+    processed: progress,
+    total: global.app.TOTAL_ITENS
+  }
 }
 
 module.exports = {
