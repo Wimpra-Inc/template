@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer')
+const puppeteer = require('puppeteer-extra')
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const { readdirSync } = require('fs')
 const { setTimeout } = require('timers/promises')
 const DownloadTimeoutError = require('../../errors/browser/DownloadTimeoutError')
@@ -7,6 +8,9 @@ const get = require('../../utils/request/get')
 const BrowserConnectionError = require('../../errors/browser/BrowserConnectionError')
 const { env } = require('../../env')
 const { URL } = require('url')
+
+// Adiciona o plugin stealth para evitar detecção de bot
+puppeteer.use(StealthPlugin())
 
 class PuppeteerAdapter {
   #page = null
@@ -58,12 +62,43 @@ class PuppeteerAdapter {
 
     await this.#page.setViewport(config.defaultViewport)
 
+    // Define User-Agent realista para evitar detecção
+    await this.#page.setUserAgent(
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    )
+
+    // Esconde que é um navegador automatizado
+    await this.#page.evaluateOnNewDocument(() => {
+      // Remove propriedade webdriver
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => undefined
+      })
+
+      // Define permissões realistas
+      Object.defineProperty(navigator, 'plugins', {
+        get: () => [1, 2, 3, 4, 5]
+      })
+
+      // Define linguagens realistas
+      Object.defineProperty(navigator, 'languages', {
+        get: () => ['pt-BR', 'pt', 'en-US', 'en']
+      })
+
+      // Remove cdc_ properties usados para detectar automação
+      const originalQuery = window.navigator.permissions.query
+      window.navigator.permissions.query = (parameters) =>
+        parameters.name === 'notifications'
+          ? Promise.resolve({ state: 'default' })
+          : originalQuery(parameters)
+    })
+
     config.pathDownload
       ? await this.setDownloadDirectory(config.pathDownload)
       : ''
 
-    this.#page.setDownloadDirectory = this.setDownloadDirectory
-    this.#page.waitForDownload = this.waitForDownload
+    // Bind dos métodos para manter o contexto correto
+    this.#page.setDownloadDirectory = (path) => this.setDownloadDirectory(path)
+    this.#page.waitForDownload = (pathDownload, limit) => this.waitForDownload(pathDownload, limit)
     this.#page.clearAllCookies = () => this.clearAllCookies()
 
     return this.#page

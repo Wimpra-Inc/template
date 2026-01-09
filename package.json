@@ -32,6 +32,8 @@
         "cpf-cnpj-validator": "^1.0.3",
         "knex": "^3.1.0",
         "puppeteer": "^21.5.2",
+        "puppeteer-extra": "^3.3.6",
+        "puppeteer-extra-plugin-stealth": "^2.11.2",
         "sqlite3": "^5.1.7",
         "uninstall": "^0.0.0",
         "validator": "^13.7.0",
